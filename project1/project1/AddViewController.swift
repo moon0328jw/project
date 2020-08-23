@@ -153,7 +153,6 @@ class AddViewController: UIViewController{
         }
         total += d
         
-        
         return total
     }
     

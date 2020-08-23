@@ -11,11 +11,13 @@ import Firebase
 
 class SignupViewController: UIViewController {
 
-    var ref: DatabaseReference!
+    var ref = Database.database().reference()
     
     @IBOutlet var nameRegisterText: UITextField!
     @IBOutlet var idRegisterText: UITextField!
     @IBOutlet var pwdRegisterText: UITextField!
+    
+    var handle: AuthStateDidChangeListenerHandle?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,25 +26,27 @@ class SignupViewController: UIViewController {
     }
     
     @IBAction func registerButtonTouched(_ sender: Any) {
-        ref = Database.database().reference()
-        Auth.auth().createUser(withEmail: idRegisterText.text!, password: pwdRegisterText.text!
-                ) { (user, error) in
-                    if user !=  nil{
+       Auth.auth().createUser(withEmail: idRegisterText.text!, password: pwdRegisterText.text!
+                ) { authResult, error in
+                    if authResult != nil{
                         print("register success")
                         let uid: String = (Auth.auth().currentUser?.uid)!
                         let userNameText: String = self.nameRegisterText.text!
                         let uidRef = self.ref.child(uid)
-                        
+
                         let userNameRef = uidRef.child("userName")
                         userNameRef.setValue(userNameText)
                     }
                     else{
+                        print(self.nameRegisterText.text!)
+                        print(self.idRegisterText.text!)
+                        print(self.pwdRegisterText.text!)
+                        print(authResult)
                         print("register failed")
                     }
         }
     }
-        
-}
+
     /*
     // MARK: - Navigation
 
@@ -52,3 +56,4 @@ class SignupViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+}
