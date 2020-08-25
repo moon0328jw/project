@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import Firebase
 
 class TableViewController: UITableViewController {
 
+    var ref: DatabaseReference!
+    let uid: String = (Auth.auth().currentUser?.uid)!
+    
     @IBOutlet var tvListView: UITableView!
     
     override func viewDidLoad() {
@@ -59,8 +63,15 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
+            let currentCell: String = items[(indexPath as NSIndexPath).row]
+            
             items.remove(at: (indexPath as NSIndexPath).row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            ref = Database.database().reference()
+            let removeRef = ref.child(uid).child(currentCell)
+            removeRef.removeValue()
+            
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
